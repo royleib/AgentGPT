@@ -1,0 +1,52 @@
+<resources>
+    <string name="app_name">Fast Hotspot</string>
+    <string name="tagline">Share your phone\'s full 4G/5G speed with your laptop, tablet or other phones.</string>
+
+    <string name="label_name">Network name</string>
+    <string name="label_password">Password (8–63 characters)</string>
+    <string name="label_band">Wi-Fi band</string>
+    <string name="band_5">5 GHz (fastest)</string>
+    <string name="band_2">2.4 GHz</string>
+    <string name="band_auto">Auto</string>
+    <string name="label_force_cellular">Always use mobile data (4G/5G), even if the phone is on Wi-Fi</string>
+
+    <string name="start">Start hotspot</string>
+    <string name="stop">Stop</string>
+    <string name="share">Share setup instructions</string>
+    <string name="copied">Copied</string>
+    <string name="open_settings">Open settings</string>
+
+    <string name="status_stopped">Hotspot is off</string>
+    <string name="status_starting">Starting…</string>
+    <string name="status_running">Hotspot is on</string>
+
+    <string name="upstream_cellular">Mobile data (4G/5G)</string>
+    <string name="upstream_waiting">Waiting for mobile data…</string>
+    <string name="upstream_default">Phone\'s default connection</string>
+
+    <string name="connect_title">How to connect a device</string>
+    <string name="details_template">1. Join Wi-Fi\n   Name:     %1$s\n   Password: %2$s\n\n2. Set the proxy on that Wi-Fi\n   Manual:   %3$s port %4$d\n   or Auto:  %5$s\n\nBand:     %6$s\nInternet: %7$s</string>
+    <string name="stats_title">Live stats</string>
+    <string name="stats_template">Devices:     %1$d\nConnections: %2$d\nDownload:    %3$s\nUpload:      %4$s\nReceived:    %5$s\nSent:        %6$s</string>
+    <string name="share_template">Fast Hotspot\n\nWi-Fi name: %1$s\nPassword: %2$s\n\nThen set the proxy on this Wi-Fi network:\n• Automatic (recommended): %5$s\n• Or manual: server %3$s, port %4$d\n\nWindows: Settings → Network → Proxy → \"Use setup script\".\nMac: Wi-Fi → Details → Proxies → \"Automatic proxy configuration\".\niPhone/iPad: Wi-Fi → (i) → Configure Proxy → Automatic.\nAndroid: Wi-Fi → network → Edit → Advanced → Proxy → \"Proxy Auto-Config\".</string>
+
+    <string name="notification_channel">Hotspot status</string>
+    <string name="notification_text">%1$s · %2$d device(s) · %3$s</string>
+
+    <string name="error_name_empty">Enter a network name</string>
+    <string name="error_name_long">Use at most %1$d characters</string>
+    <string name="error_password">Password must be 8–63 characters</string>
+    <string name="error_permission">Fast Hotspot needs the Nearby devices / Location permission to create the Wi-Fi network.</string>
+    <string name="error_wifi_off">Turn Wi-Fi on first. You don\'t need to connect to any network — Wi-Fi just has to be switched on. Also turn off the phone\'s built-in hotspot.</string>
+    <string name="error_location_off">On this Android version, Location must be switched on to create a Wi-Fi Direct network.</string>
+    <string name="error_no_p2p">This phone doesn\'t support Wi-Fi Direct.</string>
+    <string name="error_p2p_lost">Wi-Fi Direct stopped. Tap Start to try again.</string>
+    <string name="error_create_group">Couldn\'t create the Wi-Fi network (%1$s). Turn off the built-in hotspot, toggle Wi-Fi off and on, then try again.</string>
+    <string name="error_proxy">Couldn\'t start the proxy: %1$s</string>
+    <string name="reason_unsupported">Wi-Fi Direct not supported</string>
+    <string name="reason_busy">Wi-Fi is busy</string>
+    <string name="reason_error">error %1$d</string>
+
+    <string name="help_title">How it works / Help</string>
+    <string name="help_text">Why the normal hotspot is slow: many carriers detect tethered traffic and slow it down (or limit it to a small hotspot allowance), even though the phone itself gets full 4G/5G speed.\n\nWhat Fast Hotspot does: it creates its own Wi-Fi network and runs a proxy on the phone. Devices that use the proxy have their web traffic sent out by the phone itself, so it goes over the phone\'s normal mobile-data connection.\n\nSetup on each device:\n1. Join the Wi-Fi network shown in the app.\n2. Set that Wi-Fi\'s proxy to the Auto address (PAC) shown, or enter the server and port manually.\n\nTips:\n• Pick 5 GHz for the best speed (if a device can\'t see the network, try 2.4 GHz).\n• Keep the phone plugged in for long sessions.\n• If Android asks, exclude Fast Hotspot from battery optimisation.\n• Turn off the phone\'s built-in hotspot first.\n\nLimitations: only apps that respect the system proxy are covered (browsers, most apps, streaming, downloads). Some games, VPNs and UDP-based apps (like some video calls) may not work through a proxy.\n\nCheck your mobile plan\'s terms: some plans don\'t allow using phone data on other devices beyond the hotspot allowance.</string>
+</resources>

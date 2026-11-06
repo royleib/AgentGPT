@@ -1,0 +1,7 @@
+<resources>
+    <color name="accent">#1E88E5</color>
+    <color name="on">#2E7D32</color>
+    <color name="off">#616161</color>
+    <color name="wait">#F9A825</color>
+    <color name="error">#C62828</color>
+</resources>
