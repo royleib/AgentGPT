@@ -241,10 +241,11 @@ public final class ProxyServer {
 
     public String pacFile() {
         String hp = pacHost + ":" + getPort();
+        // No dnsResolve() here: the hotspot network has no DNS server of its own, so
+        // resolving on the client would stall every page load. The proxy resolves names.
         return "function FindProxyForURL(url, host) {\n"
-                + "  if (isPlainHostName(host) || shExpMatch(host, \"*.local\") ||\n"
-                + "      isInNet(dnsResolve(host), \"192.168.49.0\", \"255.255.255.0\") ||\n"
-                + "      isInNet(dnsResolve(host), \"127.0.0.0\", \"255.0.0.0\")) {\n"
+                + "  if (isPlainHostName(host) || host == \"localhost\" || shExpMatch(host, \"*.local\") ||\n"
+                + "      shExpMatch(host, \"192.168.49.*\") || shExpMatch(host, \"127.*\")) {\n"
                 + "    return \"DIRECT\";\n"
                 + "  }\n"
                 + "  return \"PROXY " + hp + "; SOCKS5 " + hp + "\";\n"
