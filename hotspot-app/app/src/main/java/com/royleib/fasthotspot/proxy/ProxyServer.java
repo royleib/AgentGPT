@@ -11,6 +11,7 @@ import java.net.InetSocketAddress;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.net.SocketException;
+import java.net.SocketTimeoutException;
 import java.nio.charset.StandardCharsets;
 import java.util.Locale;
 import java.util.concurrent.ExecutorService;
@@ -39,6 +40,8 @@ public final class ProxyServer {
     private static final int BUFFER_SIZE = 64 * 1024;
     private static final int CONNECT_TIMEOUT_MS = 15_000;
     private static final int MAX_HEADER_BYTES = 64 * 1024;
+    private static final int IDLE_CHECK_MS = 30_000;
+    private static final int IDLE_TIMEOUT_MS = 5 * 60_000;
 
     private final int port;
     private final String pacHost;
@@ -396,42 +399,66 @@ public final class ProxyServer {
         s.setSendBufferSize(BUFFER_SIZE * 4);
     }
 
-    /** Pumps bytes in both directions until either side closes. */
+    /** Pumps bytes in both directions until either side closes or both go quiet. */
     private void relay(Socket client, InputStream clientIn, Socket upstream) throws IOException {
         InputStream upIn = upstream.getInputStream();
         OutputStream upOut = upstream.getOutputStream();
         OutputStream clientOut = client.getOutputStream();
+        // Reads wake up periodically so dead connections (e.g. a laptop that went to
+        // sleep or switched networks) are closed instead of piling up forever.
+        client.setSoTimeout(IDLE_CHECK_MS);
+        upstream.setSoTimeout(IDLE_CHECK_MS);
+        AtomicLong lastActivity = new AtomicLong(System.currentTimeMillis());
 
         Thread upThread = new Thread(() -> {
-            pump(clientIn, upOut, bytesUp);
-            try { upstream.shutdownOutput(); } catch (IOException ignored) { }
+            if (pump(clientIn, upOut, bytesUp, lastActivity)) {
+                closeQuietly(upstream);
+                closeQuietly(client);
+            } else {
+                try { upstream.shutdownOutput(); } catch (IOException ignored) { }
+            }
         }, "proxy-up");
         upThread.setDaemon(true);
         upThread.start();
 
-        pump(upIn, clientOut, bytesDown);
-        try { client.shutdownOutput(); } catch (IOException ignored) { }
+        if (pump(upIn, clientOut, bytesDown, lastActivity)) {
+            closeQuietly(upstream);
+            closeQuietly(client);
+        } else {
+            try { client.shutdownOutput(); } catch (IOException ignored) { }
+        }
         try {
-            upThread.join(30_000);
+            upThread.join(IDLE_TIMEOUT_MS);
         } catch (InterruptedException e) {
             Thread.currentThread().interrupt();
         }
     }
 
-    private static void pump(InputStream in, OutputStream out, AtomicLong counter) {
+    /** Copies until EOF or error. Returns true if it stopped because the connection sat idle. */
+    private static boolean pump(InputStream in, OutputStream out, AtomicLong counter, AtomicLong lastActivity) {
         byte[] buf = new byte[BUFFER_SIZE];
         try {
-            int n;
-            while ((n = in.read(buf)) >= 0) {
+            while (true) {
+                int n;
+                try {
+                    n = in.read(buf);
+                } catch (SocketTimeoutException e) {
+                    // Only give up when neither direction has moved data for a while,
+                    // so a long download with a quiet upload side keeps going.
+                    if (System.currentTimeMillis() - lastActivity.get() >= IDLE_TIMEOUT_MS) return true;
+                    continue;
+                }
+                if (n < 0) break;
                 if (n == 0) continue;
                 out.write(buf, 0, n);
-                if (in.available() <= 0) out.flush();
                 counter.addAndGet(n);
+                lastActivity.set(System.currentTimeMillis());
             }
             out.flush();
         } catch (IOException ignored) {
             // Connection closed.
         }
+        return false;
     }
 
     private static int readByte(InputStream in) throws IOException {

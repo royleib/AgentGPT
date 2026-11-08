@@ -45,6 +45,8 @@ The approach is the same as "WiFi Hotspot" / NetShare-style apps:
      enter the server `192.168.49.1` and port `8282` by hand:
      - **Windows:** Settings → Network & Internet → Proxy → Use setup script
      - **macOS:** Wi-Fi → Details → Proxies → Automatic proxy configuration
+       (macOS applies proxy settings to *every* Wi-Fi network: create a separate
+       network Location for Fast Hotspot, or turn the proxy off when you leave)
      - **iPhone/iPad:** Settings → Wi-Fi → (i) → Configure Proxy → Automatic
      - **Android:** Wi-Fi → network → Edit → Advanced → Proxy → Proxy Auto-Config
 4. **Share setup instructions** sends all of this as text to the other device.
@@ -57,6 +59,9 @@ phones have it).
 - Only traffic that goes through the system proxy is covered. That includes
   browsers, most apps, streaming and downloads. Raw UDP (some games, some
   video-call apps) and VPN clients won't go through.
+- On 2.4 GHz, Bluetooth on the phone or laptop shares the radio and can cut
+  speed sharply. Turn it off, or get onto 5 GHz by disconnecting the phone
+  from other Wi-Fi networks before starting.
 - Some older laptops' Wi-Fi cards can't see 5 GHz networks. Use 2.4 GHz or
   Auto for those.
 - Check your mobile plan's terms. Some plans don't allow using phone data on
